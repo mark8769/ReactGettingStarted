@@ -1,27 +1,39 @@
 import { useState } from 'react';
 
 function Square( {propValue} ){
+  // const[var_to_use, setter_function] = useState(initial_value)
+  // Any time a setter is used/called React will rerender the 
+  // component(in this case the square) since the state has changed.
+  const[value, setValue] = useState(null);
+
+  function handleClick(){
+    // console.log("Clicked");
+    setValue("X");
+  }
   // The {} "escapes into Javascript from JSX"
-  return <button className="square">{propValue}</button>;
+  return (
+    <button className="square" onClick={handleClick}>{value}</button>
+  )
 }
+///////////////////////////////////////////////////////////////////////
 // This a component called "Square"
 export default function Board(){
   return(
     <>
       <div className="board-row">
-        <Square value="1"></Square>
-        <Square value="2"></Square>
-        <Square value="3"></Square>
+        <Square></Square>
+        <Square></Square>
+        <Square></Square>
       </div>
       <div className="board-row">
-        <Square value="4"></Square>
-        <Square value="5"></Square>
-        <Square value="6"></Square>
+        <Square></Square>
+        <Square></Square>
+        <Square></Square>
       </div>
       <div className="board-row">
-        <Square value="7"></Square>
-        <Square value="8"></Square>
-        <Square value="9"></Square>
+        <Square></Square>
+        <Square></Square>
+        <Square></Square>
       </div>
     </>
   )
