@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function Square( {propValue, squareClick} ){
+function Square( {propValue, onSquareClick} ){
   // const[var_to_use, setter_function] = useState(initial_value)
   // Any time a setter is used/called React will rerender the 
   // component(in this case the square) since the state has changed.
@@ -21,37 +21,43 @@ function Square( {propValue, squareClick} ){
 // This a component called "Square"
 export default function Board(){
 
+  const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
 
   // This will cause infinite loop when passed down as prop. handleClick(i)(calling the function)
   function handleClick(i){
     // Grab a COPY of the array.
     const nextSquares = squares.slice();
-    nextSquares[i] = "X";
+    if (xIsNext){
+      nextSquares[i] = "X";
+    }else{
+      nextSquares[i] = "O";
+    }
     // Calling the setSquare function will let React
     // Know that the state of the component has changed.
     // This will cause a re-render of the components that
     // use the squares state (Board) as well as its child components.
     setSquares(nextSquares);
+    setXIsNext(!xIsNext);
   }
 
   return(
     <>
       <div className="board-row">
-        {/* Use an arrow function. When the square is clicked, the code after the => will run.*/}
-        <Square value={squares[0]} onSquareClick={() => handleClick(1)}></Square>
-        <Square value={squares[1]} onSquareClick={() => handleClick(2)}></Square>
-        <Square value={squares[2]} onSquareClick={() => handleClick(3)}></Square>
+        {/* Use an arrow function. When the square is clicked, the code after the => will run. (Our function)*/}
+        <Square propValue={squares[0]} onSquareClick={() => handleClick(0)}></Square>
+        <Square propValue={squares[1]} onSquareClick={() => handleClick(1)}></Square>
+        <Square propValue={squares[2]} onSquareClick={() => handleClick(2)}></Square>
       </div>
       <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleClick(4)}></Square>
-        <Square value={squares[4]} onSquareClick={() => handleClick(5)}></Square>
-        <Square value={squares[5]} onSquareClick={() => handleClick(6)}></Square>
+        <Square propValue={squares[3]} onSquareClick={() => handleClick(3)}></Square>
+        <Square propValue={squares[4]} onSquareClick={() => handleClick(4)}></Square>
+        <Square propValue={squares[5]} onSquareClick={() => handleClick(5)}></Square>
       </div>
       <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleClick(7)}></Square>
-        <Square value={squares[7]} onSquareClick={() => handleClick(8)}></Square>
-        <Square value={squares[8]} onSquareClick={() => handleClick(9)}></Square>
+        <Square propValue={squares[6]} onSquareClick={() => handleClick(6)}></Square>
+        <Square propValue={squares[7]} onSquareClick={() => handleClick(7)}></Square>
+        <Square propValue={squares[8]} onSquareClick={() => handleClick(8)}></Square>
       </div>
     </>
   )
