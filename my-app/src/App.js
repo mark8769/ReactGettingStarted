@@ -26,7 +26,12 @@ export default function Board(){
 
   // This will cause infinite loop when passed down as prop. handleClick(i)(calling the function)
   function handleClick(i){
-    // Grab a COPY of the array.
+    // Guard Clause, return early if square already set.
+    // Also Check to see if game is over and wheter we should check for winner.)
+    if (squares[i] || calculateWinner(squares)){
+      return;
+    }
+    // Grab a COPY of the array. (Keeping track of history.)
     const nextSquares = squares.slice();
     if (xIsNext){
       nextSquares[i] = "X";
@@ -41,8 +46,40 @@ export default function Board(){
     setXIsNext(!xIsNext);
   }
 
+  function calculateWinner(squares){
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+
+    for (let i = 0; i < lines.length; i++){
+      // Similar to Tuple unpacking...
+      const [a, b, c] = lines[i]
+      // Check to see if whole "line" is "X" or "O".
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]){
+        return squares[a];
+      }
+    }
+    return null;
+  }
+  // Always called when re-rendering game...
+  const winner = calculateWinner(squares);
+  let status;
+  if (winner) {
+    status = 'Winner: ' + winner;
+  } else {
+    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+  }
+
   return(
     <>
+      <div className="status">{status}</div>
       <div className="board-row">
         {/* Use an arrow function. When the square is clicked, the code after the => will run. (Our function)*/}
         <Square propValue={squares[0]} onSquareClick={() => handleClick(0)}></Square>
