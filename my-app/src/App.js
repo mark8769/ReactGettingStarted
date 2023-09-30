@@ -17,12 +17,40 @@ function Square( {propValue, onSquareClick} ){
     <button className="square" onClick={onSquareClick}>{propValue}</button>
   )
 }
-///////////////////////////////////////////////////////////////////////
-// This a component called "Square"
-export default function Board(){
+export default function Game(){
 
   const [xIsNext, setXIsNext] = useState(true);
-  const [squares, setSquares] = useState(Array(9).fill(null));
+  // Keep 9 empty boards to set state on later.
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  // Set board to current move. (Top of Stack)
+  const currentSquares = history[history.length - 1];
+
+  // Needs to update Game's state to trigger a re-render
+  function handlePlay(nextSquares){
+    // Creates a new array that contains the items in history.
+    // Spread Syntax: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+    // The spread (...) syntax allows an iterable, such as an 
+    // array or string, to be expanded in places where 
+    // zero or more arguments (for function calls) or elements (for array literals) are expected. 
+    setHistory([...history, nextSquares]);
+    setXIsNext(!xIsNext);
+  }
+
+  return(
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay}/>
+      </div>
+      <div className="game-info">
+        <ol>{/* TODO */}</ol>
+      </div>
+    </div>
+  )
+}
+
+///////////////////////////////////////////////////////////////////////
+// This a component called "Square"
+function Board({ xIsNext, squares, onPlay }){
 
   // This will cause infinite loop when passed down as prop. handleClick(i)(calling the function)
   function handleClick(i){
@@ -42,8 +70,11 @@ export default function Board(){
     // Know that the state of the component has changed.
     // This will cause a re-render of the components that
     // use the squares state (Board) as well as its child components.
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
+    // setSquares(nextSquares);
+    // setXIsNext(!xIsNext);
+
+    // Use passed in function to control state of board from Game component.
+    onPlay(nextSquares);
   }
 
   function calculateWinner(squares){
