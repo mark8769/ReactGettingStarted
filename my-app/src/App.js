@@ -19,13 +19,14 @@ function Square( {propValue, onSquareClick} ){
 }
 export default function Game(){
 
-  const [xIsNext, setXIsNext] = useState(true);
   // Keep 9 empty boards to set state on later.
   const [history, setHistory] = useState([Array(9).fill(null)]);
   // Keep track of what move Player is currently viewing
   const [currentMove, setCurrentMove] = useState(0);
   // Set board to current move. (Top of Stack)
   const currentSquares = history[currentMove];
+
+  xIsNext = currentMove % 2 === 0;
 
   // Needs to update Game's state to trigger a re-render
   function handlePlay(nextSquares){
@@ -36,11 +37,10 @@ export default function Game(){
     // zero or more arguments (for function calls) or elements (for array literals) are expected. 
 
     // If we go back in time(past move) then do not keep any future moves beyond the current move.
-    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]
-    setHistory([...history, nextSquares]);
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    setHistory(nextHistory);
     // Every time a move is made, update currentMove to point to latest history entry.
     setCurrentMove(nextHistory.length - 1);
-    setXIsNext(!xIsNext);
   }
 
   function jumpTo(nextMove){
