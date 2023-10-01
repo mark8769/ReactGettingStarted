@@ -22,8 +22,10 @@ export default function Game(){
   const [xIsNext, setXIsNext] = useState(true);
   // Keep 9 empty boards to set state on later.
   const [history, setHistory] = useState([Array(9).fill(null)]);
+  // Keep track of what move Player is currently viewing
+  const [currentMove, setCurrentMove] = useState(0);
   // Set board to current move. (Top of Stack)
-  const currentSquares = history[history.length - 1];
+  const currentSquares = history[currentMove];
 
   // Needs to update Game's state to trigger a re-render
   function handlePlay(nextSquares){
@@ -32,9 +34,37 @@ export default function Game(){
     // The spread (...) syntax allows an iterable, such as an 
     // array or string, to be expanded in places where 
     // zero or more arguments (for function calls) or elements (for array literals) are expected. 
+
+    // If we go back in time(past move) then do not keep any future moves beyond the current move.
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]
     setHistory([...history, nextSquares]);
+    // Every time a move is made, update currentMove to point to latest history entry.
+    setCurrentMove(nextHistory.length - 1);
     setXIsNext(!xIsNext);
   }
+
+  function jumpTo(nextMove){
+    setCurrentMove(nextMove);
+    setXIsNext(nextMove % 2 === 0);
+  }
+
+  const moves = history.map((squares, move) => {
+    let description;
+    if (move > 0){
+      description = "Go to move #" + move;
+    }else{
+      description = "Go to game start";
+    }
+    return(
+      // Key: Reserved keyword in REACT, notice how were in JSX(which is enabled by importing react)
+      // So by passing this, react will have additional context of the component. (Ask ChatGPT more)
+      <li key={move}>
+        <button onClick={ () => jumpTo(move)}>
+          {description}
+        </button>
+      </li>
+    )
+  });
 
   return(
     <div className="game">
@@ -42,7 +72,7 @@ export default function Game(){
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay}/>
       </div>
       <div className="game-info">
-        <ol>{/* TODO */}</ol>
+        <ol>{moves}</ol>
       </div>
     </div>
   )
