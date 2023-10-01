@@ -26,7 +26,7 @@ export default function Game(){
   // Set board to current move. (Top of Stack)
   const currentSquares = history[currentMove];
 
-  xIsNext = currentMove % 2 === 0;
+  const xIsNext = currentMove % 2 === 0;
 
   // Needs to update Game's state to trigger a re-render
   function handlePlay(nextSquares){
@@ -45,7 +45,6 @@ export default function Game(){
 
   function jumpTo(nextMove){
     setCurrentMove(nextMove);
-    setXIsNext(nextMove % 2 === 0);
   }
 
   const moves = history.map((squares, move) => {
